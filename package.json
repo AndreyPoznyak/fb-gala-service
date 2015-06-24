@@ -1,0 +1,14 @@
+{
+    "name": "FB-GB-service",
+    "version": "0.1.0",
+    "description": "integration for login",
+    "main": "init.js",
+    "author": "Andrey Poznyak",
+    "dependencies": {
+        "sequelize": "3.3.0",
+        "mysql": "2.7.0",
+        "restify": "3.0.3",
+        "q": "1.4.1",
+        "lodash": "3.9.3"
+    }
+}
