@@ -17,10 +17,10 @@ exports.run = function () {
         console.log("posting user:");
         console.log(request.body);
 
-        db.addUser(JSON.parse(request.body)).then(function (id) {
+        db.addUser(JSON.parse(request.body)).then(function (info) {
             response.send({
                 success: true,
-                id: id
+                user: info
             });
         }, function (error) {
             response.send({

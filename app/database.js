@@ -38,20 +38,26 @@ exports.addUser = function (info) {
     if (info.id) {
         User.max("id").then(function (id) {
             console.log("max id now is: ", id);
-            var newId = id++;
+            var newId = id++,
+                username = "fbgala" + newId,
+                password = "fbpass" + newId;
 
             User.findOrCreate({
                 where: {
                     facebookId: info.id
                 },
                 defaults: {
-                    username: "facebook" + newId,
-                    password: "password" + newId
+                    username: username,
+                    password: password
                 }
             }).spread(function (user, created) {
                 if (created) {
                     console.log("user added to db: ", user);
-                    deferred.resolve(user.id);
+                    deferred.resolve({
+                        id: user.id,
+                        username: username,
+                        password: password
+                    });
                 } else {
                     console.log("user already exists");
                     deferred.reject("user already exists");
