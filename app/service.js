@@ -13,11 +13,13 @@ exports.run = function () {
     server.use(restify.bodyParser()); //in order to get correct request params
     server.use(restify.jsonp()); //support jsonp
 
-    server.post("/user", function (request, response, next) {
+    //jsonp supports only GET method
+    //server.post("/user", function (request, response, next) {
+    server.get("/newuser", function (request, response, next) {
         console.log("posting user:");
-        console.log(request.body);
+        console.log(request.query);
 
-        db.addUser(JSON.parse(request.body)).then(function (info) {
+        db.addUser(request.query).then(function (info) {
             response.send({
                 success: true,
                 user: info
@@ -29,7 +31,7 @@ exports.run = function () {
             });
         });
 
-        return next();
+        //return next();
     });
 
     server.get("/user/:id", function (request, response, next) {
