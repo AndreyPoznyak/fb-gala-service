@@ -1,3 +1,11 @@
+//error codes
+//1 - trying to add user that already exists
+
+
+
+
+
+
 var Sequelize = require("sequelize"),
     Q = require("q");
 
@@ -60,7 +68,10 @@ exports.addUser = function (info) {
                     });
                 } else {
                     console.log("user already exists");
-                    deferred.reject("user already exists");
+                    deferred.reject({
+                        errorCode: 1,
+                        message: "Sorry, but this user already exists"
+                    });
                 }
             });
         });

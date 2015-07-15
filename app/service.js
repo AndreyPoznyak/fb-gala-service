@@ -15,6 +15,8 @@ exports.run = function () {
 
     //jsonp supports only GET method
     //server.post("/user", function (request, response, next) {
+
+
     server.get("/newuser", function (request, response, next) {
         console.log("posting user:");
         console.log(request.query);
