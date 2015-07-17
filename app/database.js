@@ -1,8 +1,6 @@
 //error codes
 //1 - trying to add user that already exists
-
-
-
+//2 - not able to find the user with provided FB ID
 
 
 
@@ -46,7 +44,7 @@ exports.addUser = function (info) {
     if (info.id) {
         User.max("id").then(function (id) {
             console.log("max id now is: ", id);
-            var newId = id++,
+            var newId = id + 1,
                 username = "fbgala" + newId,
                 password = "fbpass" + newId;
 
@@ -93,7 +91,10 @@ exports.getUser = function (id) {
                 deferred.resolve(user);
             } else {
                 console.log("not able to find the user");
-                deferred.reject("not able to find the user");
+                deferred.reject({
+                    errorCode: 2,
+                    message: "Sorry, please register first"
+                });
             }
         });
     } else {
