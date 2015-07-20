@@ -43,6 +43,7 @@ exports.addUser = function (info) {
 
     if (info.id) {
         User.max("id").then(function (id) {
+            id = id || 0;
             console.log("max id now is: ", id);
             var newId = id + 1,
                 username = "fbgala" + newId,

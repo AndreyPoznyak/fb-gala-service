@@ -12,6 +12,7 @@ exports.run = function () {
     //TODO: add appropriate restify handlers
     server.use(restify.bodyParser()); //in order to get correct request params
     server.use(restify.jsonp()); //support jsonp
+    //server.use(restify.CORS());  //TODO: check it out
 
     //jsonp supports only GET method
     //server.post("/user", function (request, response, next) {
@@ -42,7 +43,10 @@ exports.run = function () {
         console.log(id);
 
         db.getUser(id).then(function (user) {
-            response.send(user);
+            response.send({
+                success: true,
+                user: user
+            });
         }, function (error) {
             response.send({
                 success: false,
