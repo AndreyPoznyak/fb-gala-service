@@ -1,9 +1,6 @@
 var restify = require("restify"),
     db = require("./database");
 
-
-//var dbActions = require("./db-actions");
-
 exports.run = function () {
     var server = restify.createServer({
         name: "FB accounts service"
@@ -11,18 +8,17 @@ exports.run = function () {
 
     //TODO: add appropriate restify handlers
     server.use(restify.bodyParser()); //in order to get correct request params
-    server.use(restify.jsonp()); //support jsonp
-    //server.use(restify.CORS());  //TODO: check it out
+    //server.use(restify.jsonp()); //support jsonp
+    server.use(restify.CORS());  //set it up properly
 
     //jsonp supports only GET method
-    //server.post("/user", function (request, response, next) {
+    //server.get("/newuser", function (request, response, next) {
 
-
-    server.get("/newuser", function (request, response, next) {
+    server.post("/user", function (request, response, next) {
         console.log("posting user:");
-        console.log(request.query);
+        console.log(request.params);
 
-        db.addUser(request.query).then(function (info) {
+        db.addUser(request.params).then(function (info) {
             response.send({
                 success: true,
                 user: info
@@ -34,7 +30,27 @@ exports.run = function () {
             });
         });
 
-        //return next();
+        return next();
+    });
+
+    server.put("/user/:id/registered", function (request, response, next) {
+        var id = request.params.id;
+
+        console.log("marking user as registered:");
+        console.log(id);
+
+        db.markUserRegistered(id).then(function () {
+            response.send({
+                success: true
+            });
+        }, function (error) {
+            response.send({
+                success: false,
+                error: error
+            });
+        });
+
+        return next();
     });
 
     server.get("/user/:id", function (request, response, next) {
@@ -57,7 +73,7 @@ exports.run = function () {
         return next();
     });
 
-    server.listen("8080", function () {
+    server.listen("3000", function () {
         console.log(server.name, " is listening at ", server.url);
     });
 }

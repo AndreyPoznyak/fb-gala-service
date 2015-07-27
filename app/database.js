@@ -8,6 +8,7 @@ var Sequelize = require("sequelize"),
     Q = require("q");
 
 //connecting without password
+//var sequelize = new Sequelize('galabingo', 'gbuser', 'philwforever', {
 var sequelize = new Sequelize('fb-accounts', 'root', null, {
     dialect: "mysql"
 });
@@ -15,7 +16,13 @@ var sequelize = new Sequelize('fb-accounts', 'root', null, {
 var User = sequelize.define('User', {
     username: Sequelize.STRING,
     password: Sequelize.STRING,
-    facebookId: Sequelize.STRING
+    registered: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
+    },
+    facebookId: Sequelize.STRING,
+    name: Sequelize.STRING,
+    email: Sequelize.STRING
 }, {
     timestamps: true
 });
@@ -46,8 +53,8 @@ exports.addUser = function (info) {
             id = id || 0;
             console.log("max id now is: ", id);
             var newId = id + 1,
-                username = "fbgala" + newId,
-                password = "fbpass" + newId;
+                username = "fbgala00" + newId,
+                password = "fbpass!!" + newId;
 
             User.findOrCreate({
                 where: {
@@ -55,7 +62,9 @@ exports.addUser = function (info) {
                 },
                 defaults: {
                     username: username,
-                    password: password
+                    password: password,
+                    name: info.name || null,
+                    email: info.email || null
                 }
             }).spread(function (user, created) {
                 if (created) {
@@ -66,11 +75,20 @@ exports.addUser = function (info) {
                         password: password
                     });
                 } else {
-                    console.log("user already exists");
-                    deferred.reject({
-                        errorCode: 1,
-                        message: "Sorry, but this user already exists"
-                    });
+                    if (!user.registered) {
+                        console.log("user already exists but not registered");
+                        deferred.resolve({
+                            id: user.id,
+                            username: user.username,
+                            password: user.password
+                        });
+                    } else {
+                        console.log("user already exists");
+                        deferred.reject({
+                            errorCode: 1,
+                            message: "Sorry, but this user already registered on GalaBingo. Try to login through Facebook"
+                        });
+                    }
                 }
             });
         });
@@ -104,6 +122,30 @@ exports.getUser = function (id) {
 
     return deferred.promise;
 };
+
+exports.markUserRegistered = function (id) {
+    var deferred = Q.defer();
+
+    User.find({where: {
+        facebookId: id
+    }}).then(function (user) {
+        if (user) {
+            user.update({
+                registered: true
+            }).then(function () {
+                deferred.resolve();
+            });
+        } else {
+            console.log("not able to find the user");
+            deferred.reject({
+                errorCode: 2,
+                message: "Sorry, there was an error. Please register first"
+            });
+        }
+    });
+
+    return deferred.promise;
+}
 
 
 
