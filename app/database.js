@@ -8,8 +8,8 @@ var Sequelize = require("sequelize"),
     Q = require("q");
 
 //connecting without password
-//var sequelize = new Sequelize('galabingo', 'gbuser', 'philwforever', {
-var sequelize = new Sequelize('fb-accounts', 'root', null, {
+var sequelize = new Sequelize('galabingo', 'gbuser', 'philwforever', {
+//var sequelize = new Sequelize('fb-accounts', 'root', null, {
     dialect: "mysql"
 });
 
@@ -53,8 +53,8 @@ exports.addUser = function (info) {
             id = id || 0;
             console.log("max id now is: ", id);
             var newId = id + 1,
-                username = "fbgala00" + newId,
-                password = "fbpass!!" + newId;
+                username = "fb00gala" + newId,
+                password = "fb00pass" + newId;
 
             User.findOrCreate({
                 where: {
